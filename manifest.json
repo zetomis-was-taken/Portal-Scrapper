@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "HCMUS Portal Helper",
+  "version": "1.0",
+  "description": "Thêm nút bấm tự động vào HCMUS Portal.",
+  "content_scripts": [
+    {
+      "matches": ["*://*.hcmus.edu.vn/SinhVien.aspx*"],
+      "js": ["content.js"],
+      "world": "MAIN"
+    }
+  ]
+}
