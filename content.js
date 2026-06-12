@@ -1,38 +1,77 @@
-// This shit is a fucking mess
-
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const handleExtrasBtn = async (monHoc, btn, field) => {
-  if (!btn) return;
+const isClassFull = (siSoText, daDKText) => {
+  const siSo = parseInt(siSoText, 10);
+  const daDK = parseInt(daDKText, 10);
+  if (!isNaN(siSo) && !isNaN(daDK)) {
+    return siSo <= daDK;
+  }
+  return false;
+};
+
+const parseSchedule = (lichHoc, diaDiem) => {
+  if (!lichHoc) return null;
+  const numbers = lichHoc.match(/\d+(\.\d+)?/g);
+  if (numbers && numbers.length >= 3) {
+    return {
+      dayOfWeek: Number(numbers[0]),
+      startPeriod: Number(numbers[1]),
+      endPeriod: Number(numbers[2]),
+      room: diaDiem || ""
+    };
+  }
+  return null;
+};
+
+const handleExtrasBtn = async (btn, type) => {
+  if (!btn) return [];
 
   btn.click();
-  await sleep(500);
-
-  const modalContent = document.querySelector("#fancybox-content");
-  if (modalContent) {
-    const modalTableRows = modalContent.querySelectorAll("tbody tr");
-    const danhSachExtras = [];
-
-    for (const modalRow of modalTableRows) {
-      const modalCell = modalRow.querySelectorAll("td");
-      if (modalCell.length < 5) continue;
-      danhSachExtras.push({
-        nhom: modalCell[0].innerText.trim(),
-        siSo: modalCell[1].innerText.trim(),
-        dangKy: modalCell[2].innerText.trim(),
-        diaDiem: modalCell[3].innerText.trim(),
-        lichHoc: modalCell[4].innerText.trim(),
-      });
-    }
-
-    monHoc[field] = danhSachExtras;
-
-    const closeBtn = document.querySelector("#fancybox-close");
-    if (closeBtn) {
-      closeBtn.click();
-      await sleep(500);
+  
+  // Chờ modal load (có thể mất thời gian do AJAX)
+  let modalTableRows = [];
+  for (let i = 0; i < 15; i++) {
+    await sleep(200);
+    const modalContent = document.querySelector("#fancybox-content");
+    if (modalContent && modalContent.style.display !== "none") {
+      const rows = modalContent.querySelectorAll("tbody tr");
+      if (rows.length > 0) {
+        modalTableRows = rows;
+        break;
+      }
     }
   }
+
+  const danhSachExtras = [];
+  for (const modalRow of modalTableRows) {
+    const modalCell = modalRow.querySelectorAll("td");
+    if (modalCell.length < 5) continue;
+
+    const groupCode = modalCell[0].innerText.trim();
+    const siSoText = modalCell[1].innerText.trim();
+    const dangKyText = modalCell[2].innerText.trim();
+    const diaDiem = modalCell[3].innerText.trim();
+    const lichHoc = modalCell[4].innerText.trim();
+
+    // Bỏ qua nếu lớp đã đầy
+    if (isClassFull(siSoText, dangKyText)) {
+      continue;
+    }
+
+    danhSachExtras.push({
+      type,
+      groupCode,
+      schedule: parseSchedule(lichHoc, diaDiem),
+    });
+  }
+
+  const closeBtn = document.querySelector("#fancybox-close");
+  if (closeBtn) {
+    closeBtn.click();
+    await sleep(300);
+  }
+  
+  return danhSachExtras;
 };
 
 const scrapeCourseData = async () => {
@@ -47,69 +86,52 @@ const scrapeCourseData = async () => {
 
   for (const row of rows) {
     const cells = row.querySelectorAll("td");
-
     if (cells.length < 11) continue;
 
-    const monHoc = {
-      maMH: cells[0].innerText.trim(),
-      tenMH: cells[1].innerText.trim(),
-      tenLop: cells[2].innerText.trim(),
-      soTC: cells[3].innerText.trim(),
-      siSo: cells[4].innerText.trim(),
-      daDK: cells[5].innerText.trim(),
-      khoa: cells[6].innerText.trim(),
-      lichHoc: cells[7].innerText.trim(),
-      nhomTH: null,
-      nhomBT: null,
-      diaDiem: cells[10].innerText.trim(),
-    };
+    const siSoText = cells[4].innerText.trim();
+    const daDKText = cells[5].innerText.trim();
+
+    // Bỏ qua môn học nếu lớp đã đầy
+    if (isClassFull(siSoText, daDKText)) {
+      continue;
+    }
 
     const btnTH = cells[8].querySelector("a");
     const btnBT = cells[9].querySelector("a");
 
-    await handleExtrasBtn(monHoc, btnTH, "nhomTH");
-    await handleExtrasBtn(monHoc, btnBT, "nhomBT");
+    const practicals = await handleExtrasBtn(btnTH, "practical");
+    const exercises = await handleExtrasBtn(btnBT, "exercise");
+    const subClasses = [...practicals, ...exercises];
 
-    if (btnTH) {
-      btnTH.click();
-      await sleep(500);
+    const courseCode = cells[0].innerText.trim();
+    const courseName = cells[1].innerText.trim();
+    const className = cells[2].innerText.trim();
+    const creditsText = cells[3].innerText.trim();
+    const lichHoc = cells[7].innerText.trim();
+    const diaDiem = cells[10].innerText.trim();
 
-      const modalContent = document.querySelector("#fancybox-content");
-      if (modalContent) {
-        const modalTableRows = modalContent.querySelectorAll("tbody tr");
-        const danhSachTH = [];
+    const credits = parseInt(creditsText, 10);
 
-        for (const modalRow of modalTableRows) {
-          const modalCell = modalRow.querySelectorAll("td");
-          if (modalCell.length < 5) continue;
-          danhSachTH.push({
-            nhom: modalCell[0].innerText.trim(),
-            siSo: modalCell[1].innerText.trim(),
-            dangKy: modalCell[2].innerText.trim(),
-            diaDiem: modalCell[3].innerText.trim(),
-            lichHoc: modalCell[4].innerText.trim(),
-          });
-        }
+    const formattedCourse = {
+      className,
+      courseCode,
+      courseName,
+      credits: isNaN(credits) ? 0 : credits,
+      schedule: parseSchedule(lichHoc, diaDiem),
+    };
 
-        monHoc.danhSachTH = danhSachTH;
-
-        const closeBtn = document.querySelector("#fancybox-close");
-        if (closeBtn) {
-          closeBtn.click();
-          await sleep(500);
-        }
-      }
+    if (subClasses.length > 0) {
+      formattedCourse.subClasses = subClasses;
     }
 
-    ketQua.push(monHoc);
-    console.log(`Done: ${monHoc.tenMH}`);
-    await sleep(200);
+    ketQua.push(formattedCourse);
+    console.log(`Done: ${courseName}`);
   }
 
   const fileName = `Portal_Data_${new Date().getTime()}.json`;
   downloadJSON(ketQua, fileName);
 
-  console.log(ketQua);
+  console.log("Scraping completed. Data:", ketQua);
 };
 
 const injectButton = () => {

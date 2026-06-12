@@ -1,0 +1,164 @@
+[
+  {
+    "className": "INT3111 1",
+    "courseCode": "INT3111",
+    "courseName": "Phát triển ứng dụng Web",
+    "credits": 3,
+    "schedule": {
+      "dayOfWeek": 3,
+      "startPeriod": 1,
+      "endPeriod": 3,
+      "room": "301-G3"
+    }
+  },
+  {
+    "className": "INT3111 2",
+    "courseCode": "INT3111",
+    "courseName": "Phát triển ứng dụng Web",
+    "credits": 3,
+    "schedule": {
+      "dayOfWeek": 4,
+      "startPeriod": 4,
+      "endPeriod": 6,
+      "room": "302-G3"
+    }
+  },
+  {
+    "className": "INT3110 1",
+    "courseCode": "INT3110",
+    "courseName": "Phân tích thiết kế hệ thống",
+    "credits": 3,
+    "schedule": {
+      "dayOfWeek": 5,
+      "startPeriod": 1,
+      "endPeriod": 3,
+      "room": "201-G2"
+    },
+    "subClasses": [
+      {
+        "type": "practical",
+        "groupCode": "1",
+        "schedule": {
+          "dayOfWeek": 2,
+          "startPeriod": 7,
+          "endPeriod": 9,
+          "room": "PM1-G3"
+        }
+      },
+      {
+        "type": "practical",
+        "groupCode": "2",
+        "schedule": {
+          "dayOfWeek": 6,
+          "startPeriod": 7,
+          "endPeriod": 9,
+          "room": "PM2-G3"
+        }
+      }
+    ]
+  },
+  {
+    "className": "MAT1092 1",
+    "courseCode": "MAT1092",
+    "courseName": "Đại số tuyến tính",
+    "credits": 4,
+    "schedule": {
+      "dayOfWeek": 2,
+      "startPeriod": 1,
+      "endPeriod": 3,
+      "room": "401-G2"
+    },
+    "subClasses": [
+      {
+        "type": "exercise",
+        "groupCode": "1",
+        "schedule": {
+          "dayOfWeek": 4,
+          "startPeriod": 1,
+          "endPeriod": 2,
+          "room": "402-G2"
+        }
+      },
+      {
+        "type": "exercise",
+        "groupCode": "2",
+        "schedule": {
+          "dayOfWeek": 4,
+          "startPeriod": 3,
+          "endPeriod": 4,
+          "room": "402-G2"
+        }
+      }
+    ]
+  },
+  {
+    "className": "MAT1092 2",
+    "courseCode": "MAT1092",
+    "courseName": "Đại số tuyến tính",
+    "credits": 4,
+    "schedule": {
+      "dayOfWeek": 3,
+      "startPeriod": 4,
+      "endPeriod": 6.5,
+      "room": "401-G2"
+    },
+    "subClasses": [
+      {
+        "type": "exercise",
+        "groupCode": "1",
+        "schedule": {
+          "dayOfWeek": 5,
+          "startPeriod": 1,
+          "endPeriod": 3.5,
+          "room": "403-G2"
+        }
+      },
+      {
+        "type": "exercise",
+        "groupCode": "2",
+        "schedule": {
+          "dayOfWeek": 5,
+          "startPeriod": 3,
+          "endPeriod": 4,
+          "room": "403-G2"
+        }
+      }
+    ]
+  },
+  {
+    "className": "PHY1040 1",
+    "courseCode": "PHY1040",
+    "courseName": "Cơ nhiệt",
+    "credits": 3,
+    "schedule": {
+      "dayOfWeek": 6,
+      "startPeriod": 1,
+      "endPeriod": 3,
+      "room": "101-G2"
+    }
+  },
+  {
+    "className": "ENG2020 1",
+    "courseCode": "ENG2020",
+    "courseName": "Tiếng Anh B1",
+    "credits": 4,
+    "schedule": {
+      "dayOfWeek": 7,
+      "startPeriod": 1,
+      "endPeriod": 4,
+      "room": "304-G3"
+    }
+  },
+  {
+    "className": "ENG2020 2",
+    "courseCode": "ENG2020",
+    "courseName": "Tiếng Anh B1",
+    "credits": 4,
+    "schedule": {
+      "dayOfWeek": 2,
+      "startPeriod": 1,
+      "endPeriod": 4,
+      "room": "305-G3"
+    }
+  }
+]
